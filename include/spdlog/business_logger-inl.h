@@ -26,6 +26,23 @@ void business_logger_manager::init(const std::string &log_dir) {
     std::lock_guard<std::mutex> lock(mutex_);
     log_dir_ = log_dir;
     initialized_ = true;
+    init_all_loggers_internal();
+}
+
+void business_logger_manager::init_all_loggers_internal() {
+    BusinessType types[] = {
+        BusinessType::ScreenRecording,
+        BusinessType::OpenDesktop,
+        BusinessType::KeyboardRecording,
+        BusinessType::AudioRecording
+    };
+    
+    for (auto type : types) {
+        if (loggers_.find(type) == loggers_.end()) {
+            auto logger = create_business_logger(type);
+            loggers_[type] = logger;
+        }
+    }
 }
 
 void business_logger_manager::set_log_dir(const std::string &log_dir) {
@@ -80,9 +97,7 @@ std::shared_ptr<logger> business_logger_manager::get_logger(BusinessType busines
         return it->second;
     }
     
-    auto logger = create_business_logger(business_type);
-    loggers_[business_type] = logger;
-    return logger;
+    return nullptr;
 }
 
 template <typename... Args>

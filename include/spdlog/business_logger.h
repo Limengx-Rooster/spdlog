@@ -59,6 +59,7 @@ private:
 
     std::string business_type_to_string(BusinessType type) const;
     std::shared_ptr<logger> create_business_logger(BusinessType type);
+    void init_all_loggers_internal();
 
     std::string log_dir_;
     std::map<BusinessType, std::shared_ptr<logger>> loggers_;
